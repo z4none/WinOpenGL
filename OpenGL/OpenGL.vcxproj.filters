@@ -61,13 +61,11 @@
     <None Include="OpenGL.def">
       <Filter>源文件</Filter>
     </None>
-    <None Include="res\OpenGL.rc2">
+    <None Include="..\ShaderFile\fragment.glsl">
       <Filter>资源文件</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="OpenGL.rc">
+    <None Include="..\ShaderFile\vertex.glsl">
       <Filter>资源文件</Filter>
-    </ResourceCompile>
+    </None>
   </ItemGroup>
 </Project>

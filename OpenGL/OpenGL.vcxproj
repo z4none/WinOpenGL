@@ -134,11 +134,9 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)bin
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\ShaderFile\fragment.glsl" />
+    <None Include="..\ShaderFile\vertex.glsl" />
     <None Include="OpenGL.def" />
-    <None Include="res\OpenGL.rc2" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="OpenGL.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
