@@ -10,9 +10,9 @@ void main()
 {
 	tc=vec2(texCoord.x,1-texCoord.y);
 	vec4 vcol=texture(Texture0,tc);
-	//float gray=0.2990*vcol.r+0.5870*vcol.g+0.1140*vcol.b;
+	float gray=0.2990*vcol.r+0.5870*vcol.g+0.1140*vcol.b;
 	vec3 pos=position;
-	pos.z=vcol.r;
+	pos.z=gray*2.0;
 	gl_Position=projection*view*model*vec4(pos,1.0f);
 	
 }
