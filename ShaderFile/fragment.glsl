@@ -1,6 +1,10 @@
 #version 330 core
 out vec4 color;
+in vec2 tc;
+
+uniform sampler2D Texture0;
 void main()
 {
-	color=vec4(0.4f,0.6f,0.0f,1.0f);
+	color=texture(Texture0,tc);
+	vec4 vcol=color;
 }

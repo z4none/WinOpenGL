@@ -5,3 +5,4 @@
 #include "macro.h"
 #include "OpenGLObject.h"
 #include "Shader.h"
+#include <SOIL/SOIL.h>

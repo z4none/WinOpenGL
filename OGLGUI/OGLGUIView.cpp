@@ -124,7 +124,7 @@ int COGLGUIView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_OGL->CreateSceneData();
 		GetClientRect(&m_OGL->m_oldRect);
 	}
-	SetTimer(1, 20, NULL);
+	//SetTimer(1, 20, NULL);
 	return 0;
 }
 

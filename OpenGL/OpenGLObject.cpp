@@ -12,6 +12,7 @@ OpenGLObject::~OpenGLObject()
 {
 	glDeleteBuffers(1, &m_vertexBuffer);
 	glDeleteVertexArrays(1, &m_vertexArray);
+	glDeleteTextures(1, &m_TextureObject);
 }
 
 bool OpenGLObject::InitGlew(CWnd *window)
@@ -119,21 +120,24 @@ void OpenGLObject::DrawScene()
 	m_Shader.AddShader(GL_VERTEX_SHADER, vertexShaderCode);
 	m_Shader.AddShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
 	m_Shader.LinkShaderProgram();
-	m_rotate += 1.0f;
-	if (m_rotate >= 360.0f)
-		m_rotate = 0.0f;
+	//m_rotate += 1.0f;
+	//if (m_rotate >= 360.0f)
+	m_rotate = -60.0f;
 	glm::mat4 model;
-	model = glm::rotate(model, glm::radians(m_rotate), glm::vec3(0.0, 1.0, 0.0));
+	model = glm::rotate(model, glm::radians(m_rotate), glm::vec3(1.0, 0.0, 0.0));
 	glm::mat4 view;
-	view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	view = glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	m_Shader.UseProgram();
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_TextureObject);
+	glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "Texture0"), 0);
 
 	glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(m_projection));
 	glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 	glBindVertexArray(m_vertexArray);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 	SwapBuffers(wglGetCurrentDC());
 }
@@ -141,9 +145,13 @@ void OpenGLObject::DrawScene()
 void OpenGLObject::CreateSceneData()
 {
 	GLfloat vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f
+		//¶¥µã				//ÎÆÀí×ø±ê
+		-5.0f, -5.0f, 0.0f,  0.0,0.0,
+		5.0f, -5.0f, 0.0f,   1.0,0.0,
+		5.0f, 5.0f, 0.0f,	 1.0,1.0,
+		5.0f, 5.0f, 0.0f,	 1.0,1.0,
+		-5.0f,5.0f,0.0f,	 0.0,1.0,	
+		-5.0f,-5.0f,0.0f,	 0.0,0.0
 	};
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
@@ -152,9 +160,12 @@ void OpenGLObject::CreateSceneData()
 	glGenVertexArrays(1, &m_vertexArray);
 	glBindVertexArray(m_vertexArray);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),(GLvoid*)(3*sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 
+	CreateTexture(m_TextureObject, GL_REPEAT,GL_NEAREST,GL_LINEAR,"..\\Texture\\ground.png");
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
@@ -172,4 +183,20 @@ void OpenGLObject::DestroyOGL()
 void OpenGLObject::ResetViewPort(int x, int y, int width, int height)
 {
 	glViewport(x, y, width, height);
+}
+
+void OpenGLObject::CreateTexture(GLuint &texture, GLenum wrapMode, GLenum MAG_filterMode, GLenum MIN_filterMode, const GLchar* path)
+{
+	int width, height;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, MAG_filterMode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, MIN_filterMode);
+	unsigned char *image = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	SOIL_free_image_data(image);
 }
