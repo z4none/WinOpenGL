@@ -57,6 +57,7 @@ public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	virtual void OnInitialUpdate();
 };
 
 #ifndef _DEBUG  // OGLGUIView.cpp 中的调试版本

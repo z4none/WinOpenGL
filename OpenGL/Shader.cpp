@@ -4,7 +4,6 @@
 
 CShader::CShader()
 {
-	m_shaderProgram = glCreateProgram();
 }
 
 
@@ -71,4 +70,9 @@ void CShader::LinkShaderProgram()
 void CShader::UseProgram()
 {
 	glUseProgram(m_shaderProgram);
+}
+
+void CShader::CreateShader()
+{
+	m_shaderProgram = glCreateProgram();
 }

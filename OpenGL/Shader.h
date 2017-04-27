@@ -10,6 +10,7 @@ public:
 	CShader();
 	~CShader();
 	std::string GetFileStr(const char* fileName);
+	void CreateShader();
 	void AddShader(GLenum shaderType, std::string shaderSource);
 	void LinkShaderProgram();
 	void UseProgram();

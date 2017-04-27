@@ -2,9 +2,10 @@
 #include "OpenGLObject.h"
 
 
-OpenGLObject::OpenGLObject()
+OpenGLObject::OpenGLObject():
+m_rotate(0.0f),
+m_IsFirst(true)
 {
-	m_rotate = 0.0f;
 }
 
 
@@ -114,19 +115,15 @@ void OpenGLObject::DrawScene()
 {
 	glClearColor(0.2f, 0.5f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	CShader m_Shader;
-	std::string vertexShaderCode = m_Shader.GetFileStr("..\\ShaderFile\\vertex.glsl");
-	std::string fragmentShaderCode = m_Shader.GetFileStr("..\\ShaderFile\\fragment.glsl");
-	m_Shader.AddShader(GL_VERTEX_SHADER, vertexShaderCode);
-	m_Shader.AddShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
-	m_Shader.LinkShaderProgram();
-	//m_rotate += 1.0f;
-	//if (m_rotate >= 360.0f)
-	m_rotate = -60.0f;
+	int x= m_oldRect.TopLeft().x;
+	int y = m_oldRect.TopLeft().y;
+	m_rotate += 1.0f;
+	if (m_rotate >= 360.0f)
+		m_rotate = 0.0f;
 	glm::mat4 model;
 	model = glm::rotate(model, glm::radians(m_rotate), glm::vec3(1.0, 0.0, 0.0));
 	glm::mat4 view;
-	view = glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	view = glm::lookAt(glm::vec3(1.0f, 3.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	m_Shader.UseProgram();
 
 	glActiveTexture(GL_TEXTURE0);
@@ -165,9 +162,17 @@ void OpenGLObject::CreateSceneData()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),(GLvoid*)(3*sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
-	CreateTexture(m_TextureObject, GL_REPEAT,GL_NEAREST,GL_LINEAR,"..\\Texture\\ground.png");
+	CreateTexture(m_TextureObject, GL_REPEAT,GL_NEAREST,GL_NEAREST,"..\\Texture\\ground.png");
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	m_Shader.CreateShader();
+	std::string vertexShaderCode = m_Shader.GetFileStr("..\\ShaderFile\\vertex.glsl");
+	std::string fragmentShaderCode = m_Shader.GetFileStr("..\\ShaderFile\\fragment.glsl");
+	m_Shader.AddShader(GL_VERTEX_SHADER, vertexShaderCode);
+	m_Shader.AddShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
+	m_Shader.LinkShaderProgram();
+	m_IsFirst = false;
 }
 
 void OpenGLObject::DestroyOGL()
@@ -200,3 +205,15 @@ void OpenGLObject::CreateTexture(GLuint &texture, GLenum wrapMode, GLenum MAG_fi
 	glBindTexture(GL_TEXTURE_2D, 0);
 	SOIL_free_image_data(image);
 }
+
+//DWORD WINAPI  RunOGL(LPVOID pogl)
+//{
+//	OpenGLObject* ogl = (OpenGLObject*)pogl;
+//	ogl->DrawScene();
+//	return 0;
+//}
+//
+//void OpenGLObject::run()
+//{
+//	m_pOGLthread = AfxBeginThread((AFX_THREADPROC)RunOGL, (LPVOID)this);
+//}
