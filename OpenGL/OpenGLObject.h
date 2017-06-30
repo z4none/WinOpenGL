@@ -14,6 +14,7 @@ public:
 	void DestroyOGL();
 	void ResetViewPort(int x,int y,int width,int height);
 	void CreateTexture(GLuint &texture, GLenum wrapMode, GLenum MAG_filterMode, GLenum MIN_filterMode, const GLchar* path);
+	void run();
 
 public:
 	CClientDC	*m_pDC;

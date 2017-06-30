@@ -26,8 +26,8 @@ bool OpenGLObject::InitGlew(CWnd *window)
 	//尝试设置像素格式
 	if (!SetPixelFormat(temHdc, 1, &pfd))//每个窗口只能设置一次
 		return false;
-	HGLRC temphRC = wglCreateContext(temHdc);//创建一个临时的环境为了初始化glew,初始化后才能够使用wglChoosePixelFormatARB，wglCreateContextAttribsARB函数 
-	wglMakeCurrent(temHdc, temphRC);//只有设置当前opengl环境后才能够初始化glew库 
+	HGLRC temphRC = wglCreateContext(temHdc);//创建一个临时的环境为了初始化glew,初始化后才能够使用wglChoosePixelFormatARB，wglCreateContextAttribsARB函数
+	wglMakeCurrent(temHdc, temphRC);//只有设置当前opengl环境后才能够初始化glew库
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
@@ -92,7 +92,7 @@ bool OpenGLObject::SetupPixelFormat(CDC* pDC)
 	GLint attribs[] = {
 		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,//主版本3
 		WGL_CONTEXT_MINOR_VERSION_ARB, 3,//次版本3
-		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,//要求返回兼容模式环境,如果不指定或指定为WGL_CONTEXT_CORE_PROFILE_BIT_ARB会返回只包含核心功能的环境 
+		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,//要求返回兼容模式环境,如果不指定或指定为WGL_CONTEXT_CORE_PROFILE_BIT_ARB会返回只包含核心功能的环境
 		0
 	};
 	m_hRc = wglCreateContextAttribsARB(pDC->GetSafeHdc(), 0, attribs);
@@ -115,28 +115,28 @@ void OpenGLObject::DrawScene()
 {
 	glClearColor(0.2f, 0.5f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	int x= m_oldRect.TopLeft().x;
-	int y = m_oldRect.TopLeft().y;
-	m_rotate += 1.0f;
-	if (m_rotate >= 360.0f)
-		m_rotate = 0.0f;
-	glm::mat4 model;
-	model = glm::rotate(model, glm::radians(m_rotate), glm::vec3(1.0, 0.0, 0.0));
-	glm::mat4 view;
-	view = glm::lookAt(glm::vec3(1.0f, 3.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	m_Shader.UseProgram();
+	while (true)
+	{
+		//int x = m_oldRect.TopLeft().x;
+		//int y = m_oldRect.TopLeft().y;
+		glm::mat4 model;
+		model = glm::rotate(model, glm::radians(m_rotate), glm::vec3(1.0, 0.0, 0.0));
+		glm::mat4 view;
+		view = glm::lookAt(glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		m_Shader.UseProgram();
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_TextureObject);
-	glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "Texture0"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_TextureObject);
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "Texture0"), 0);
 
-	glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(m_projection));
-	glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-	glBindVertexArray(m_vertexArray);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-	SwapBuffers(wglGetCurrentDC());
+		glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(m_projection));
+		glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		glBindVertexArray(m_vertexArray);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+		SwapBuffers(wglGetCurrentDC());
+	}
 }
 
 void OpenGLObject::CreateSceneData()
@@ -147,7 +147,7 @@ void OpenGLObject::CreateSceneData()
 		5.0f, -5.0f, 0.0f,   1.0,0.0,
 		5.0f, 5.0f, 0.0f,	 1.0,1.0,
 		5.0f, 5.0f, 0.0f,	 1.0,1.0,
-		-5.0f,5.0f,0.0f,	 0.0,1.0,	
+		-5.0f,5.0f,0.0f,	 0.0,1.0,
 		-5.0f,-5.0f,0.0f,	 0.0,0.0
 	};
 	glGenBuffers(1, &m_vertexBuffer);
@@ -206,14 +206,13 @@ void OpenGLObject::CreateTexture(GLuint &texture, GLenum wrapMode, GLenum MAG_fi
 	SOIL_free_image_data(image);
 }
 
-//DWORD WINAPI  RunOGL(LPVOID pogl)
-//{
-//	OpenGLObject* ogl = (OpenGLObject*)pogl;
-//	ogl->DrawScene();
-//	return 0;
-//}
-//
-//void OpenGLObject::run()
-//{
-//	m_pOGLthread = AfxBeginThread((AFX_THREADPROC)RunOGL, (LPVOID)this);
-//}
+void OpenGLObject::run()
+{
+	//m_pOGLthread = AfxBeginThread((AFX_THREADPROC)RunOGL, (LPVOID)this);
+	std::thread drawThread([this](){
+		InitializeOpenGL(m_pDC);
+		CreateSceneData();
+		DrawScene();
+	});
+	drawThread.detach();
+}

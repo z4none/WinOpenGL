@@ -1,9 +1,9 @@
-// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面 
+// 这段 MFC 示例源代码演示如何使用 MFC Microsoft Office Fluent 用户界面
 // (“Fluent UI”)。该示例仅供参考，
-// 用以补充《Microsoft 基础类参考》和 
-// MFC C++ 库软件随附的相关电子文档。  
-// 复制、使用或分发 Fluent UI 的许可条款是单独提供的。  
-// 若要了解有关 Fluent UI 许可计划的详细信息，请访问  
+// 用以补充《Microsoft 基础类参考》和
+// MFC C++ 库软件随附的相关电子文档。
+// 复制、使用或分发 Fluent UI 的许可条款是单独提供的。
+// 若要了解有关 Fluent UI 许可计划的详细信息，请访问
 // http://go.microsoft.com/fwlink/?LinkId=238214。
 //
 // 版权所有(C) Microsoft Corporation
@@ -69,8 +69,8 @@ void COGLGUIView::OnDraw(CDC* /*pDC*/)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
+	//m_OGL->DrawScene();
 	// TODO:  在此处为本机数据添加绘制代码
-	m_OGL->DrawScene();
 }
 
 void COGLGUIView::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -121,12 +121,9 @@ int COGLGUIView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (m_OGL->InitGlew(this))
 	{
 		m_OGL->m_pDC = new CClientDC(this);
-		m_OGL->InitializeOpenGL(m_OGL->m_pDC); 
-		m_OGL->CreateSceneData();
 		GetClientRect(&m_OGL->m_oldRect);
 	}
-		
-	SetTimer(1, 20, NULL);
+	//SetTimer(1, 20, NULL);
 	return 0;
 }
 
@@ -175,4 +172,5 @@ void COGLGUIView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 	// TODO:  在此添加专用代码和/或调用基类
+	m_OGL->run();
 }
