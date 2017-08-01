@@ -4,7 +4,8 @@
 
 OpenGLObject::OpenGLObject():
 m_rotate(0.0f),
-m_IsFirst(true)
+m_IsFirst(true),
+m_time(0)
 {
 }
 
@@ -115,40 +116,47 @@ void OpenGLObject::DrawScene()
 {
 	glClearColor(0.2f, 0.5f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	while (true)
-	{
+	m_time++;
+	if (m_time > 365)
+		m_time = 0;
+	//while (true)
+	//{
 		//int x = m_oldRect.TopLeft().x;
 		//int y = m_oldRect.TopLeft().y;
 		glm::mat4 model;
 		model = glm::rotate(model, glm::radians(m_rotate), glm::vec3(1.0, 0.0, 0.0));
 		glm::mat4 view;
-		view = glm::lookAt(glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		m_Shader.UseProgram();
-
-		glActiveTexture(GL_TEXTURE0);
+		/*glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_TextureObject);
-		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "Texture0"), 0);
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "Texture0"), 0);*/
 
 		glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(m_projection));
 		glUniformMatrix4fv(glGetUniformLocation(m_Shader.m_shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "viewX"), m_x);
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "viewY"), m_y);
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "viewW"), m_viewPortW);
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "viewH"), m_viewPortH);
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "time"), m_time);
 		glBindVertexArray(m_vertexArray);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 		SwapBuffers(wglGetCurrentDC());
-	}
+	//}
 }
 
 void OpenGLObject::CreateSceneData()
 {
 	GLfloat vertices[] = {
 		//¶¥µã				//ÎÆÀí×ø±ê
-		-5.0f, -5.0f, 0.0f,  0.0,0.0,
-		5.0f, -5.0f, 0.0f,   1.0,0.0,
-		5.0f, 5.0f, 0.0f,	 1.0,1.0,
-		5.0f, 5.0f, 0.0f,	 1.0,1.0,
-		-5.0f,5.0f,0.0f,	 0.0,1.0,
-		-5.0f,-5.0f,0.0f,	 0.0,0.0
+		-1.0f, -1.0f, 0.0f,  0.0,0.0,
+		1.0f, -1.0f, 0.0f,   1.0,0.0,
+		1.0f, 1.0f, 0.0f,	 1.0,1.0,
+		1.0f, 1.0f, 0.0f,	 1.0,1.0,
+		-1.0f,1.0f,0.0f,	 0.0,1.0,
+		-1.0f,-1.0f,0.0f,	 0.0,0.0
 	};
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
@@ -162,7 +170,7 @@ void OpenGLObject::CreateSceneData()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),(GLvoid*)(3*sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
-	CreateTexture(m_TextureObject, GL_REPEAT,GL_NEAREST,GL_NEAREST,"..\\Texture\\ground.png");
+	//CreateTexture(m_TextureObject, GL_REPEAT,GL_NEAREST,GL_NEAREST,"..\\Texture\\ground.png");
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
@@ -188,6 +196,10 @@ void OpenGLObject::DestroyOGL()
 void OpenGLObject::ResetViewPort(int x, int y, int width, int height)
 {
 	glViewport(x, y, width, height);
+	m_x = x;
+	m_y = y;
+	m_viewPortW = width;
+	m_viewPortH = height;
 }
 
 void OpenGLObject::CreateTexture(GLuint &texture, GLenum wrapMode, GLenum MAG_filterMode, GLenum MIN_filterMode, const GLchar* path)

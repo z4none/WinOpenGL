@@ -69,7 +69,7 @@ void COGLGUIView::OnDraw(CDC* /*pDC*/)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-	//m_OGL->DrawScene();
+	m_OGL->DrawScene();
 	// TODO:  在此处为本机数据添加绘制代码
 }
 
@@ -121,9 +121,11 @@ int COGLGUIView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (m_OGL->InitGlew(this))
 	{
 		m_OGL->m_pDC = new CClientDC(this);
+		m_OGL->InitializeOpenGL(m_OGL->m_pDC);
+		m_OGL->CreateSceneData();
 		GetClientRect(&m_OGL->m_oldRect);
 	}
-	//SetTimer(1, 20, NULL);
+	SetTimer(1, 150, NULL);
 	return 0;
 }
 
@@ -172,5 +174,5 @@ void COGLGUIView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 	// TODO:  在此添加专用代码和/或调用基类
-	m_OGL->run();
+	//m_OGL->run();
 }

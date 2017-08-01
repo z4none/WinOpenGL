@@ -25,6 +25,7 @@ std::string CShader::GetFileStr(const char* fileName)
 	}
 	catch (std::ifstream::failure e)
 	{
+		TRACE("%s\n",_T("着色器文件读取失败!"));
 		MessageBox(NULL, L"着色器文件读取失败！", L"着色器", MB_ICONERROR);
 	}
 	auto str = fileStream.str();
@@ -46,6 +47,7 @@ void CShader::AddShader(GLenum shaderType, std::string shaderSource)
 		glGetShaderInfoLog(shader, sizeof(info), nullptr, info);
 		std::string str("ERROR::SHADER::COMPILATION::FAILED\n");
 		str.append(info);
+		TRACE("%s\n", str.c_str());
 		MessageBox(NULL, (LPCWSTR)str.c_str(), L"着色器", MB_ICONERROR);
 	}
 	glAttachShader(m_shaderProgram, shader);
@@ -63,6 +65,7 @@ void CShader::LinkShaderProgram()
 		glGetProgramInfoLog(m_shaderProgram, sizeof(info), nullptr, info);
 		std::string str("ERROR::PROGRAM::LINK::FAILED\n");
 		str.append(info);
+		TRACE("%s\n", str.c_str());
 		MessageBox(NULL, (LPCWSTR)str.c_str(), L"着色器程序", MB_ICONERROR);
 	}
 }

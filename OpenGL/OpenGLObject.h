@@ -30,6 +30,12 @@ public:
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
 	float m_rotate;
+public:
+	int m_x;
+	int m_y;
+	int m_viewPortW;
+	int m_viewPortH;
+	GLint m_time;
 private:
 	CWinThread *m_pOGLthread;
 };
