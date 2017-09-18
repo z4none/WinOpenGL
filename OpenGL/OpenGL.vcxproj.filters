@@ -67,10 +67,22 @@
     <None Include="OpenGL.def">
       <Filter>源文件</Filter>
     </None>
-    <None Include="..\ShaderFile\fragment.glsl">
+    <None Include="..\ShaderFile\vertex.glsl">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="..\ShaderFile\vertex.glsl">
+    <None Include="..\ShaderFile\ShaderToy_1.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="..\ShaderFile\water.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="..\ShaderFile\Toy2.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="..\ShaderFile\frag.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="..\ShaderFile\sphere.glsl">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

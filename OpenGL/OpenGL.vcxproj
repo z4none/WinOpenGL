@@ -136,8 +136,12 @@ copy $(OutDir)$(TargetName)$(TargetExt) $(SolutionDir)bin
     <ClInclude Include="Vec3.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\ShaderFile\fragment.glsl" />
+    <None Include="..\ShaderFile\frag.glsl" />
+    <None Include="..\ShaderFile\ShaderToy_1.glsl" />
+    <None Include="..\ShaderFile\sphere.glsl" />
+    <None Include="..\ShaderFile\Toy2.glsl" />
     <None Include="..\ShaderFile\vertex.glsl" />
+    <None Include="..\ShaderFile\water.glsl" />
     <None Include="OpenGL.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

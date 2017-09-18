@@ -5,7 +5,9 @@
 OpenGLObject::OpenGLObject():
 m_rotate(0.0f),
 m_IsFirst(true),
-m_time(0)
+m_iTime(0.0),
+m_mouseX(0),
+m_mouseY(0)
 {
 }
 
@@ -116,13 +118,8 @@ void OpenGLObject::DrawScene()
 {
 	glClearColor(0.2f, 0.5f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	m_time++;
-	if (m_time > 365)
-		m_time = 0;
-	//while (true)
-	//{
-		//int x = m_oldRect.TopLeft().x;
-		//int y = m_oldRect.TopLeft().y;
+	m_iTime += 0.01f;
+
 		glm::mat4 model;
 		model = glm::rotate(model, glm::radians(m_rotate), glm::vec3(1.0, 0.0, 0.0));
 		glm::mat4 view;
@@ -139,12 +136,13 @@ void OpenGLObject::DrawScene()
 		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "viewY"), m_y);
 		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "viewW"), m_viewPortW);
 		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "viewH"), m_viewPortH);
-		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "time"), m_time);
+		glUniform1f(glGetUniformLocation(m_Shader.m_shaderProgram, "iTime"), m_iTime);
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "mouseX"), m_mouseX);
+		glUniform1i(glGetUniformLocation(m_Shader.m_shaderProgram, "mouseY"), m_mouseY);
 		glBindVertexArray(m_vertexArray);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 		SwapBuffers(wglGetCurrentDC());
-	//}
 }
 
 void OpenGLObject::CreateSceneData()
@@ -176,7 +174,7 @@ void OpenGLObject::CreateSceneData()
 
 	m_Shader.CreateShader();
 	std::string vertexShaderCode = m_Shader.GetFileStr("..\\ShaderFile\\vertex.glsl");
-	std::string fragmentShaderCode = m_Shader.GetFileStr("..\\ShaderFile\\fragment.glsl");
+	std::string fragmentShaderCode = m_Shader.GetFileStr("..\\ShaderFile\\water.glsl");
 	m_Shader.AddShader(GL_VERTEX_SHADER, vertexShaderCode);
 	m_Shader.AddShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
 	m_Shader.LinkShaderProgram();

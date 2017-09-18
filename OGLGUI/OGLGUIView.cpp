@@ -39,6 +39,8 @@ BEGIN_MESSAGE_MAP(COGLGUIView, CView)
 	ON_WM_ERASEBKGND()
 	ON_WM_SIZE()
 	ON_WM_TIMER()
+	ON_WM_MOVE()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 // COGLGUIView 构造/析构
@@ -125,7 +127,8 @@ int COGLGUIView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_OGL->CreateSceneData();
 		GetClientRect(&m_OGL->m_oldRect);
 	}
-	SetTimer(1, 150, NULL);
+	//int iTime=1000.0*(1.0/60.0)
+	SetTimer(1,20, NULL);
 	return 0;
 }
 
@@ -175,4 +178,20 @@ void COGLGUIView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 	// TODO:  在此添加专用代码和/或调用基类
 	//m_OGL->run();
+}
+
+
+void COGLGUIView::OnMove(int x, int y)
+{
+	CView::OnMove(x, y);
+	// TODO:  在此处添加消息处理程序代码
+}
+
+
+void COGLGUIView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	m_OGL->m_mouseX = point.x;
+	m_OGL->m_mouseY = point.y;
+	CView::OnMouseMove(nFlags, point);
 }

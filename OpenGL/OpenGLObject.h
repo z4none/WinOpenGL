@@ -35,7 +35,9 @@ public:
 	int m_y;
 	int m_viewPortW;
 	int m_viewPortH;
-	GLint m_time;
+	int m_mouseX;
+	int m_mouseY;
+	GLfloat m_iTime;
 private:
 	CWinThread *m_pOGLthread;
 };

@@ -16,6 +16,7 @@ void main()
 
 	vcol.r*=20.0;
 	//gl_Position=projection*view*model*vec4(pos,1.0f);
+	//vec4(pos,1.0f)=inverse(projection*view*model)*gl_Position;
 	gl_Position=vec4(pos,1.0f);
 
 }

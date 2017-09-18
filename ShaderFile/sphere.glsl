@@ -5,15 +5,15 @@ uniform int viewX;
 uniform int viewY;
 uniform int viewW;
 uniform int viewH;
-uniform int time;
+uniform float iiTime;
 out vec4 color;
 in vec2 tc;
 in vec3 pos;
 float mySphere(in vec3 ro,in vec3 rd,in vec4 sph)
 {
 
-	float r=sph.w*sph.w;
-	vec3 oo=ro-sph.xyz;
+	float r=sph.w*sph.w;//°ë¾¶
+	vec3 oo=ro-sph.xyz;//Æ«ÒÆ
 	float a=dot(oo,oo);
 	float b=dot(rd,rd);
 	float c=dot(oo,rd);
@@ -55,13 +55,13 @@ void main()
 {
 	vec3 lightpos=vec3(0.57608);
 	color=vec4(vec3(1.0),1.0f);
-	vec2 uv=vec2(gl_FragCoord.x/viewW,gl_FragCoord.y/viewH);//uv[0.0,1.0]
+	vec2 uv=vec2(gl_FragCoord.x/viewW,gl_FragCoord.y/viewH)*2.0-1.0;//uv[-1.0,1.0]
 	vec3 ro = vec3(0.0,0.0,3.0);
-	vec3 rd=normalize(vec3( (-1.0+2.0*uv)*vec2(1.78,1.0),-1.0));//Ó³ÉäuvÎª[-1.0,1.0]
+	float nw = viewH / viewW;
+	//uv.x *= nw;
+	vec3 rd=normalize(vec3( uv,-1.0));
 	float resT;
-	vec4 spho=vec4(0.0,0.0,0.0,1.0);
-	spho.x=0.5*cos(time);
-	spho.z=0.5*sin(time);
+	vec4 spho = vec4(0.5*sin(iiTime), 0.0, 0.5*cos(iiTime), 1.0);
 	float id=intersect(ro,rd,resT,spho);
 	if(id>0.5&&id<1.5)
 	{
